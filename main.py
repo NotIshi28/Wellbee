@@ -10,7 +10,7 @@ load_dotenv()
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL_NAME = "mistralai/mixtral-8x7b-instruct"
+MODEL_NAME = "x-ai/grok-4.1-fast"
 
 
 def call_openrouter(messages):
@@ -38,8 +38,8 @@ def call_openrouter(messages):
 	return data["choices"][0]["message"]["content"]
 
 
-st.set_page_config(page_title="Workforce Wellbeing Assistant", page_icon="🧠")
-st.title("Workforce Wellbeing Assistant")
+st.set_page_config(page_title="Wellbee", page_icon="🐝")
+st.title("Wellbee")
 st.caption("Supportive, practical guidance for workplace wellbeing.")
 
 with st.sidebar:
@@ -58,7 +58,7 @@ if "messages" not in st.session_state:
 		{
 			"role": "system",
 			"content": (
-				"You are a Workforce Wellbeing Assistant. Provide supportive, actionable, and "
+				"You are Wellbee, a Workforce Wellbeing Assistant. Provide supportive, actionable, and "
 				"evidence-based guidance for workplace wellbeing, stress management, communication, "
 				"and work-life balance. Be empathetic, concise, and practical."
 				"Talk less, dont make long lists talk like a human."
