@@ -42,9 +42,54 @@ st.set_page_config(page_title="Wellbee", page_icon="🐝")
 st.title("Wellbee")
 st.caption("Supportive, practical guidance for workplace wellbeing.")
 
+PERSONAS = {
+	"Wellbee": {
+		"icon": "🐝",
+		"system": (
+			"You are Wellbee, a Workforce Wellbeing Assistant. Provide supportive, actionable, and "
+			"evidence-based guidance for workplace wellbeing, stress management, communication, "
+			"and work-life balance. Be empathetic, concise, and practical. "
+			"Talk less, dont make long lists talk like a human. "
+			"PLEASE TALK NORMALLY, DONT MAKE LONG LISTS, DONT TALK LIKE A ROBOT, TALK LIKE A HUMAN. "
+			"RESPOND IN MAX 2-3 LINES."
+		),
+		"blurb": "Supportive, practical guidance for workplace wellbeing.",
+	},
+	"Calm Mindfulness Guide": {
+		"icon": "🧘",
+		"system": (
+			"You are a calm mindfulness guide. Offer short grounding exercises, gentle reframes, and "
+			"breathing prompts. Be warm, simple, and soothing. "
+			"Keep replies to 2-3 lines, no long lists, no robotic tone."
+		),
+		"blurb": "Gentle grounding and mindfulness support.",
+	},
+	"Practical Planner": {
+		"icon": "🗂️",
+		"system": (
+			"You are a practical planner focused on small, concrete next steps. Offer clear, "
+			"time-boxed actions, prioritization tips, and simple scripts. "
+			"Keep replies to 2-3 lines, avoid long lists and robotic tone."
+		),
+		"blurb": "Actionable steps, planning, and prioritization.",
+	},
+	"Friendly Colleague": {
+		"icon": "🙂",
+		"system": (
+			"You are a friendly colleague. Be casual, supportive, and human, like a trusted peer. "
+			"Offer brief encouragement and practical suggestions. "
+			"Keep replies to 2-3 lines, no long lists, no robotic tone."
+		),
+		"blurb": "Casual, peer-like support and encouragement.",
+	},
+}
+
 with st.sidebar:
 	st.header("Assistant Settings")
 	st.write(f"Model: {MODEL_NAME}")
+	persona_names = list(PERSONAS.keys())
+	selected_persona = st.selectbox("Persona", persona_names, index=0)
+	st.caption(f"{PERSONAS[selected_persona]['icon']} {PERSONAS[selected_persona]['blurb']}")
 	st.markdown("""
 Use this assistant for:
 - Stress management tips
@@ -53,20 +98,21 @@ Use this assistant for:
 - Work-life balance ideas
 	""")
 
+if "selected_persona" not in st.session_state:
+	st.session_state.selected_persona = selected_persona
+
+def build_system_message(persona_key):
+	return {
+		"role": "system",
+		"content": PERSONAS[persona_key]["system"],
+	}
+
 if "messages" not in st.session_state:
-	st.session_state.messages = [
-		{
-			"role": "system",
-			"content": (
-				"You are Wellbee, a Workforce Wellbeing Assistant. Provide supportive, actionable, and "
-				"evidence-based guidance for workplace wellbeing, stress management, communication, "
-				"and work-life balance. Be empathetic, concise, and practical."
-				"Talk less, dont make long lists talk like a human."
-				"PLEASE TALK NORMALLY, DONT MAKE LONG LISTS, DONT TALK LIKE A ROBOT, TALK LIKE A HUMAN."
-				"RESPOND IN MAX 2-3 LINES."
-			),
-		}
-	]
+	st.session_state.messages = [build_system_message(selected_persona)]
+
+if st.session_state.selected_persona != selected_persona:
+	st.session_state.selected_persona = selected_persona
+	st.session_state.messages = [build_system_message(selected_persona)]
 
 for msg in st.session_state.messages:
 	if msg["role"] == "system":
